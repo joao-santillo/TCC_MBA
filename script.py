@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, balanced_accuracy_score
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-base_path = 'C:\\Users\\jv_sa\\PycharmProjects\\TCC\\dataset\\Dataset_BUSI_with_GT\\'
+base_path = 'dataset/Dataset_BUSI_with_GT'
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -1,8 +1,20 @@
-#rodar por fora do Visual Studio Code, abrindo o WSL.
-#manutenção pelo Windows e rodando pelo Ubuntu.
+import tensorflow as tf
 
-from tensorflow.python.client import device_lib
-def get_available_devices():
-     local_device_protos = device_lib.list_local_devices()
-     return [x.name for x in local_device_protos]
-print(get_available_devices()) 
+# Listar todos os dispositivos disponíveis
+devices = tf.config.list_physical_devices()
+print("Todos os dispositivos disponíveis:")
+for device in devices:
+    print(device)
+
+# Verificar se há GPUs disponíveis
+gpu_devices = tf.config.list_physical_devices('GPU')
+if gpu_devices:
+    print("\nGPUs disponíveis:")
+    for gpu in gpu_devices:
+        print(gpu)
+else:
+    print("\nNenhuma GPU disponível.")
+
+# Verificar se TensorFlow está usando a GPU
+print("\nTensorFlow está usando a GPU?")
+print("Sim" if tf.config.experimental.list_physical_devices('GPU') else "Não")
