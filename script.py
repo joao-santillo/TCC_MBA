@@ -24,20 +24,6 @@ def split_data(class_name, base_path, test_size=0.2, stratify=True):
     source_dir = os.path.join(base_path, class_name)
     files = [os.path.join(source_dir, file) for file in os.listdir(source_dir)]
 
-    '''
-    Como temos um desbalanceamento de classes, está sendo utilizando o parâmetro stratify do train_test_split.
-    Se não utilizarmos este parâmetro, os labels de treinamento favorecerão a classe majoritária, o que compromete o treinamento da CNN. 
-    Esta técnica evita a criação de vieses e mantém a integridade dos dados.
-
-    Divisão de classes do dataset utilizado:
-
-    Case	Number of images
-    Benign	487
-    Malignant	210
-    Normal	133
-    Total	780
-    '''
-
     y = [class_name] * len(files)
 
     if stratify == True:
@@ -89,25 +75,9 @@ def featureExtractionCNN(Xtrain, Xtest, include_top):
     Xtrain = model.predict(Xtrain)
     Xtest = model.predict(Xtest)
 
-    '''prediction = np.array(model.predict(Xtrain))
-    Xtrain = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]))
-    
-    prediction = np.array(model.predict(Xtest))
-    Xtest = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]))'''    
-
     print('\t\tFeatures training shape: ', Xtrain.shape)
     print('\t\tFeatures testing shape: ', Xtest.shape)
     return Xtrain, Xtest
-
-#CROSS-VALIDATION NÃO SE APLICA MUITO BEM PARA REDES NEURAIS, SE APLICA PARA ML COMUM.
-'''def crossValidation(Xtrain, Ytrain):
-    print("\tCross-validation with K-NN ...")
-    kf = StratifiedKFold(n_splits=5, shuffle=True)
-    #kf = KFold(n_splits=5, shuffle=True)
-
-    knn = KNeighborsClassifier(n_neighbors=3)
-    scores = cross_val_score(knn, Xtrain, np.ravel(Ytrain, order='C'), cv=kf)
-    print('\t\tAccuracy K-NN: %0.4f +/- %0.4f' % (scores.mean(), scores.std()))'''
 
 '''UTILIZAR O I-PCA PARA RODAR SEM O TOPO, POIS A DIMENSIONALIDADE ESTARÁ AUMENTADA EM 49x PARA RESNET-50.
 UTILIZAR O PCA JOGA TODOS OS DADOS NA MEMÓRIA DE UMA SÓ VEZ, FAZER O TESTE PARA VER SE O PC AGUENTA.'''
@@ -146,36 +116,6 @@ def classificationSVM(Xtrain, Ytrain, Xtest, Ytest):
     print("\t\tF1-Score Linear SVM: %0.4f" % f1)
     print("\t\tRecall Linear SVM: %0.4f" % recall)
 
-#NÃO É NECESSÁRIO:
-#PRECISO TER CARACTERÍSTICAS DE ALTO NÍVEL PARA A EXPLICABILIDADE E ESSE PROCESSO DESCONSIDERA ALGUMAS CARACTERÍSTICAS.
-'''
-    def multiFeatureExtractionCNN(Xtrain, Xtest):
-    print("\tLoading the ResNet50-ImageNet model ...")
-    model = resnet50.ResNet50(include_top=True, weights='imagenet', input_shape=(224, 224, 3), classes=1000)
-
-    modelGlobal = Model(inputs=model.input, outputs=model.get_layer(name='avg_pool').output)
-    modelLocal = Model(inputs=model.input, outputs=model.get_layer(name='activation_4').output)
-    
-    prediction = np.array(modelGlobal.predict(Xtrain))
-    XtrainGlobal = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]*prediction.shape[2]*prediction.shape[3]))
-    
-    prediction = np.array(modelGlobal.predict(Xtest))
-    XtestGlobal = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]*prediction.shape[2]*prediction.shape[3]))
-
-    prediction = np.array(modelLocal.predict(Xtrain))
-    XtrainLocal = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]*prediction.shape[2]*prediction.shape[3]))
-    
-    prediction = np.array(modelLocal.predict(Xtest))
-    XtestLocal = np.reshape(prediction, (prediction.shape[0], prediction.shape[1]*prediction.shape[2]*prediction.shape[3]))
-    
-    Xtrain = np.concatenate((XtrainGlobal, XtrainLocal), axis=1)
-    Xtest = np.concatenate((XtestGlobal, XtestLocal), axis=1)
-
-    print('\t\tFeatures fusion training shape: ', Xtrain.shape)
-    print('\t\tFeatures fusion testing shape: ', Xtest.shape)
-    return Xtrain, Xtest
-    
-'''
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
